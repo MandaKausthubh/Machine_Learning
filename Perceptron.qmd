@@ -1,0 +1,79 @@
+---
+Title: "Starting with Machine Learning using QMD"
+format: html
+jupyter: python3
+---
+
+# Intro to Machine Learning.
+
+
+# Perceptron Model
+
+Creating the perceptron, for Linearly seprable data.
+$$y=-2x + 5$$
+
+
+## Creating using just Numpy and Matplotlib
+```{python}
+import numpy as np
+import matplotlib.pyplot as plt
+import sklearn as sk
+```
+
+```{python}
+# Generating training data:
+N = 50 # Number of training data points per color
+x1_red = np.random.random(N)*20 - 10
+x1_blue = np.random.random(N)*20 - 10
+x2_red = np.zeros_like(x1_red)
+x2_blue = np.zeros_like(x1_blue)
+
+for i in range(N):
+  x2_red[i] = np.random.random() * (35 - (- x1_red[i] * 2 + 5)) - 2*x1_red[i] + 5
+  x2_blue[i] = np.random.random() * ((- x1_blue[i] * 2 + 5) + 15) - 15
+
+x = np.linspace(start=-10, stop=10, num=1000)
+plt.scatter(x1_blue, x2_blue, color='blue')
+plt.scatter(x1_red, x2_red, color='red')
+plt.plot(x, -2*x + 5)
+```
+
+```{python}
+w = np.zeros(3)
+
+# Preparing the data
+x_blue = np.dstack((x1_blue, x2_blue, np.ones_like(x1_blue)))[0]
+x_red = np.dstack((x1_red, x2_red, np.ones_like(x1_red)))[0]
+```
+
+```{python}
+
+def FindingMismatchPoints():
+  for i in x_blue:
+    if (np.inner(i, w) <= 0):
+      return (1,1,i)
+  for j in x_red:
+    if(np.inner(j, w) > 0):
+      return (1,-1,j)
+  return (0,0, np.array([]))
+```
+
+```{python}
+flag, y_data, x_data = FindingMismatchPoints()
+count = 0
+
+while flag != 0:
+  w += y_data * x_data
+  flag, y_data, x_data = FindingMismatchPoints()
+  count += 1
+
+def NewLine(x):
+  return -((w[0]*x/w[1]) + (w[2]/w[1]))
+
+plt.plot(x, NewLine(x),'--', color='orange')
+plt.scatter(x1_blue, x2_blue, color='blue')
+plt.scatter(x1_red, x2_red, color='red')
+plt.plot(x, -2*x + 5)
+```
+## How to use Sk-Learn for building a Linearly Separable Data, separating Perceptron
+

@@ -1,0 +1,129 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "---\n",
+        "Title: \"Starting with Machine Learning using QMD\"\n",
+        "format: html\n",
+        "jupyter: python3\n",
+        "---\n",
+        "\n",
+        "\n",
+        "# Intro to Machine Learning.\n",
+        "\n",
+        "\n",
+        "# Perceptron Model\n",
+        "\n",
+        "Creating the perceptron, for Linearly seprable data.\n",
+        "$$y=-2x + 5$$\n",
+        "\n",
+        "\n",
+        "## Creating using just Numpy and Matplotlib"
+      ],
+      "id": "f88e61fa"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "import numpy as np\n",
+        "import matplotlib.pyplot as plt\n",
+        "import sklearn as sk"
+      ],
+      "id": "74e206a6",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "# Generating training data:\n",
+        "N = 50 # Number of training data points per color\n",
+        "x1_red = np.random.random(N)*20 - 10\n",
+        "x1_blue = np.random.random(N)*20 - 10\n",
+        "x2_red = np.zeros_like(x1_red)\n",
+        "x2_blue = np.zeros_like(x1_blue)\n",
+        "\n",
+        "for i in range(N):\n",
+        "  x2_red[i] = np.random.random() * (35 - (- x1_red[i] * 2 + 5)) - 2*x1_red[i] + 5\n",
+        "  x2_blue[i] = np.random.random() * ((- x1_blue[i] * 2 + 5) + 15) - 15\n",
+        "\n",
+        "x = np.linspace(start=-10, stop=10, num=1000)\n",
+        "plt.scatter(x1_blue, x2_blue, color='blue')\n",
+        "plt.scatter(x1_red, x2_red, color='red')\n",
+        "plt.plot(x, -2*x + 5)"
+      ],
+      "id": "9ad0d3e4",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "w = np.zeros(3)\n",
+        "\n",
+        "# Preparing the data\n",
+        "x_blue = np.dstack((x1_blue, x2_blue, np.ones_like(x1_blue)))[0]\n",
+        "x_red = np.dstack((x1_red, x2_red, np.ones_like(x1_red)))[0]"
+      ],
+      "id": "10389950",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "def FindingMismatchPoints():\n",
+        "  for i in x_blue:\n",
+        "    if (np.inner(i, w) <= 0):\n",
+        "      return (1,1,i)\n",
+        "  for j in x_red:\n",
+        "    if(np.inner(j, w) > 0):\n",
+        "      return (1,-1,j)\n",
+        "  return (0,0, np.array([]))"
+      ],
+      "id": "9c416a30",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "flag, y_data, x_data = FindingMismatchPoints()\n",
+        "count = 0\n",
+        "\n",
+        "while flag != 0:\n",
+        "  w += y_data * x_data\n",
+        "  flag, y_data, x_data = FindingMismatchPoints()\n",
+        "  count += 1\n",
+        "\n",
+        "def NewLine(x):\n",
+        "  return -((w[0]*x/w[1]) + (w[2]/w[1]))\n",
+        "\n",
+        "plt.plot(x, NewLine(x),'--', color='orange')\n",
+        "plt.scatter(x1_blue, x2_blue, color='blue')\n",
+        "plt.scatter(x1_red, x2_red, color='red')\n",
+        "plt.plot(x, -2*x + 5)"
+      ],
+      "id": "f5ca6960",
+      "execution_count": null,
+      "outputs": []
+    }
+  ],
+  "metadata": {
+    "kernelspec": {
+      "name": "python3",
+      "language": "python",
+      "display_name": "Python 3 (ipykernel)",
+      "path": "/Users/mandakausthubh/Library/Python/3.12/share/jupyter/kernels/python3"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 5
+}
